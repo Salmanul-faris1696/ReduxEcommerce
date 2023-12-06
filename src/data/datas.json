@@ -1,0 +1,60 @@
+[
+    {
+        "id":0 ,
+        "name" : "Fresh Fruit" ,
+        "count" : "9 Product" ,
+        "img" : "./Images/category__1.webp"
+        
+    },
+     {
+        "id":1 ,
+        "name" : "Fresh Vegs" ,
+        "count" : "8 Product" ,
+        "img" : "./Images/category__2.webp"
+        
+    },
+     {
+        "id":2 ,
+        "name" : "Canned Goods" ,
+        "count" : "10 Product" ,
+        "img" : "./Images/category__3.webp"
+        
+    },
+     {
+        "id":3 ,
+        "name" : "Bread & Bakery" ,
+        "count" : "12 Product" ,
+        "img" : "./Images/category__4.webp"
+        
+    },
+     {
+        "id":4 ,
+        "name" : "Fishes" ,
+        "count" : "10 Product" ,
+        "img" : "./Images/category__5.webp"
+        
+    },
+     {
+        "id":5 ,
+        "name" : "Eggs & Dairy" ,
+        "count" : "7 Product" ,
+        "img" : "./Images/category__6.webp"
+        
+    },
+     {
+        "id":6 ,
+        "name" : "Soft Drinks" ,
+        "count" : "5 Product" ,
+        "img" : "./Images/category__7.webp"
+        
+    },
+     {
+        "id":7 ,
+        "name" : "Fresh Fruit" ,
+        "count" : "9 Product" ,
+        "img" : "./Images/category__1.webp"
+        
+    }
+
+]
+

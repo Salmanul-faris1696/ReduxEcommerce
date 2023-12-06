@@ -1,0 +1,35 @@
+[
+    {
+        "id" : 1 ,
+        "img" : "/Images/product__1.webp",
+        "name" : "Dried Mango",
+        "price" : "$500 "
+
+    },
+    
+    {
+        "id" : 2 ,
+        "img" : "/Images/product__2.webp",
+        "name" : "Crunchy Crisps",
+        "price" : "$300 "
+
+    },
+        
+    {
+        "id" : 3 ,
+        "img" : "/Images/product__3.webp",
+        "name" : "Jewel Cranberries",
+        "price" : "$200 "
+
+    },
+        
+    {
+        "id" : 4 ,
+        "img" : "/Images/product__4.webp",
+        "name" : "Almond organic",
+        "price" : "$100 "
+
+    }
+
+    
+]

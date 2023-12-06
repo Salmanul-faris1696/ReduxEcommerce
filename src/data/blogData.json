@@ -1,0 +1,28 @@
+[
+    {
+        "id" : 1 ,
+        "img" : "./Images/post__1.webp",
+        "title" : "Healthy Food Healthy Life",
+        "date"  : "Aug 27, 2023 ",
+        "comments" : "8"
+        
+    },
+
+     {
+        "id" : 2 ,
+        "img" : "./Images/post__2.webp",
+        "title" : "Healthy Food Healthy Life",
+        "date"  : "Aug 25, 2023 ",
+        "comments" : "1"
+        
+    },
+
+     {
+        "id" : 3 ,
+        "img" : "./Images/post__3.webp",
+        "title" : "Healthy Food Healthy Life",
+        "date"  : "Aug 30, 2023  ",
+        "comments" : "6"
+        
+    }
+]
