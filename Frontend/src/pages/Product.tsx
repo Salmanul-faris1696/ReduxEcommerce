@@ -14,6 +14,7 @@ import mastercard from "../../public/Images/mastercard.webp"
 import paypal from "../../public/Images/paypal.webp"
 import visa from "../../public/Images/visa.webp"
 import PaymentPrompt from '../components/PaymentPrompt'; 
+import Pay from './Pay'
 
 
 
@@ -164,21 +165,22 @@ const Product: React.FC = () => {
             <hr className='m-3 hidden md:block'/>
 
             <div className='flex  mt-5  mb-8 -ml-8 justify-center  md:flex md:justify-start md:-ml-3'>
-                 <div className="flex bg-accent   text-white p-2  rounded-lg items-center w-[300px] ml-4 justify-center cursor-pointer" onClick={() => {
-        handleBuyNow();
-    }}>
-
-                    BUY NOW 
+                 <div className="flex bg-accent   text-white p-2  rounded-lg items-center w-[300px] ml-4 justify-center cursor-pointer"                
+    //               onClick={() => {
+    //     handleBuyNow();
+    // }}
+    >
+     
+                    <Pay Product={product}  />
 
                  </div>
 
-                  <PaymentPrompt
+                  {/* <PaymentPrompt
                 product={product}
                 onConfirm={handlePaymentConfirm}
                 onCancel={handlePaymentCancel}
                 isOpen={showPaymentPrompt}
-            />
-
+            /> */}
 
 
             </div>

@@ -7,6 +7,8 @@ import store from './app/store.ts'
 import './index.css'
 import Home from './pages/Home.tsx'
 import Product from './pages/Product.tsx'
+import Pay from './pages/pay.tsx'
+import Success from './pages/success.tsx'
 
 
 
@@ -30,6 +32,15 @@ const router = createBrowserRouter([
   {
     path:"/product/:id",
     element : <Product/>
+  },
+  {
+    path:"/pay",
+    element:<Pay/>
+
+  },
+  {
+    path:"/success",
+    element:<Success/>
   }
 ])
 
