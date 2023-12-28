@@ -13,7 +13,7 @@ import descover from "../../public/Images/discover.webp"
 import mastercard from "../../public/Images/mastercard.webp"
 import paypal from "../../public/Images/paypal.webp"
 import visa from "../../public/Images/visa.webp"
-import PaymentPrompt from '../components/PaymentPrompt'; 
+// import PaymentPrompt from '../components/PaymentPrompt'; 
 import Pay from './Pay'
 
 
@@ -23,7 +23,7 @@ const Product: React.FC = () => {
          const [ showCart , setShowCart] =useState<any>(false);
          const [product ,setProduct] = useState<any>(false);
          const [quantity , setQuantity] = useState<number>(1);
-         const [showPaymentPrompt, setShowPaymentPrompt] = useState(false);
+        //  const [showPaymentPrompt, setShowPaymentPrompt] = useState(false);
 
 
          const toggleCart = () => {
@@ -54,17 +54,17 @@ const Product: React.FC = () => {
             }
         }
 
-        const handleBuyNow = () => {
-             setShowPaymentPrompt(true);
-        };
+        // const handleBuyNow = () => {
+        //      setShowPaymentPrompt(true);
+        // };
 
-        const handlePaymentConfirm = () => {
-        setShowPaymentPrompt(false);
-    };
+    //     const handlePaymentConfirm = () => {
+    //     setShowPaymentPrompt(false);
+    // };
 
-    const handlePaymentCancel = () => {
-        setShowPaymentPrompt(false);
-    };
+    // const handlePaymentCancel = () => {
+    //     setShowPaymentPrompt(false);
+    // };
 
   
 
