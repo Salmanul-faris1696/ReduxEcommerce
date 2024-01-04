@@ -1,8 +1,9 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react';
 import "../App.css";
-import { signupUser } from "./../utils/handleApi";
+
 import { useMutation } from 'react-query';
 import { Link, useNavigate } from 'react-router-dom';
+import { signupUser } from '../utils/handleApi';
 
 const SignupForm: React.FC = () => {
   const [username, setUsername] = useState('');

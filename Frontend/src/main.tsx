@@ -7,12 +7,18 @@ import store from './app/store.ts'
 import './index.css'
 import Home from './pages/Home.tsx'
 import Product from './pages/Product.tsx'
-// import Pay from './pages/pay.tsx'
-// import Success from './pages/success.tsx'
 import Login from './pages/Login.tsx'
 import SignupForm from './pages/SignupForm';
 import { QueryClient, QueryClientProvider } from 'react-query'
 import RequireAuth from './components/RequireAuth.tsx'
+import CreateProduct from './pages/CreateProduct.tsx'
+import DashBoard from './pages/DashBoard.tsx'
+
+import 'swiper/css';
+import 'swiper/css/pagination';
+import ProductTable from './components/DashBoard/pages/ProductTable.tsx'
+
+
 
 
 const queryClient = new QueryClient
@@ -48,6 +54,17 @@ const router = createBrowserRouter([
     path:"/product/:id",
     element : <Product/>
   },
+  {
+    path:"/CreateProduct",
+    element:<CreateProduct/>
+  },{
+    path:"/DashBoard",
+    element:<DashBoard/>
+    
+  },{
+    path:"/ProductTable",
+    element:<ProductTable/>
+  }
 
 ])
 

@@ -5,11 +5,28 @@ import { MdShoppingCart } from "react-icons/md";
 import CartCountBadge from "./CartCountBadge";
 import SearchBar from "./SearchBar";
 import { useState } from "react";
+import { useNavigate } from 'react-router-dom';
+import Cookies from "js-cookie"
+
+
 
 
 const MobileNav = ({setShowCart}:any) => {
 
     const [showSearchBar, setShowSearchBar] = useState(false);
+     const [showUserOptions, setShowUserOptions] = useState(false);
+      const navigate = useNavigate();
+
+      const toggleUserOptions = () => {
+    setShowUserOptions(!showUserOptions);
+  };
+
+   const handleLogout = () => {
+  
+     Cookies.remove('token');
+    navigate('/Login'); 
+  };
+
 
   const toggleSearchBar = () => {
     setShowSearchBar(prevState => !prevState);
@@ -27,8 +44,18 @@ const MobileNav = ({setShowCart}:any) => {
                 <h1 className="text-lg font-medium">
                     logo 
                 </h1>
-                <div className=" flex gap-4 text-[30px]">
+                <div className=" flex gap-4 text-[30px]" onClick={toggleUserOptions}>
                     <FaUser size={20} />
+                     {showUserOptions && (
+              <div className="absolute right-24 mt-2 w-fit  bg-white border border-gray-300 rounded shadow-md">
+                <ul>
+                  <li className=" py-2 px-2 text-base cursor-pointer hover:bg-gray-500" onClick={handleLogout}>
+                    Log Out
+                  </li>
+                  
+                </ul>
+              </div>
+            )}
                     <div className="relative cursor-pointer" onClick={()=> setShowCart(true)}>
                          <MdShoppingCart size={24} />
                          <CartCountBadge size="w-[18px] h-[18px]"/>

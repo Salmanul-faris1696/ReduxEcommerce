@@ -4,7 +4,6 @@ import BlogSections from '../components/BlogSections'
 import Cart from '../components/Cart'
 import Category from '../components/Category'
 import FeatureSection from '../components/FeatureSection'
-import { FeatureSection2 } from '../components/FeatureSection2'
 import Footer from '../components/Footer'
 import FooterEnd from '../components/FooterEnd'
 import Hero from '../components/Hero'
@@ -24,8 +23,12 @@ export default function Home({}: Props) {
      
       <Hero/>
  <Category/>
+ 
+<section>
+
  <FeatureSection/>
- <FeatureSection2/>
+</section>
+ {/* <FeatureSection2/> */}
  <Banner/>
  <BlogSections/>
  <Newsletter/>

@@ -32,7 +32,7 @@ export const FeatureSection2 = () => {
 
            <FeatureCard
         id={item.id}
-        img={item.img}
+        imag={item.img}
         name={item.name}
         price={item.price}/>
         </div>

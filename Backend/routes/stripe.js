@@ -10,13 +10,23 @@ const router = express.Router()
 
 router.post('/create-checkout-session', async (req, res) => {
   console.log(req.body);
+//   const price = await stripe.prices.create({
+//   unit_amount: 2000, // amount in cents
+//   currency: 'usd',
+//   product_data: {
+//     name: req.body.name,
+//     price: req.body.name
+//     // Other product details
+//   },
+// })
   const session = await stripe.checkout.sessions.create({
     line_items: [
       {
         price_data: {
           currency: 'usd',
           product_data: {
-            name: req.body.name,
+            name: req.body.title,
+        
           },
           unit_amount: 500,
         },

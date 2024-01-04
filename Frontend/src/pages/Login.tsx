@@ -23,7 +23,7 @@ const Login: React.FC = () => {
 
   const navigate = useNavigate()
 
-  const loginMutation = useMutation((data: { username: string; password: string }) => loginUser(data.username, data.password), {
+  const loginMutation = useMutation((data: { username: string; password: string })  => loginUser(data.username, data.password), {
     onSuccess: (data:any) => {
       navigate("/")
 
@@ -31,9 +31,9 @@ const Login: React.FC = () => {
       console.log('Login successful', {data});
 
       Cookies.set("token" , data.accessToken)
+      
     },
     onError: (error: Error) => {
-      // Handle login error (display error message, etc.)
       console.error('Login error:', error.message);
        toast.warn("Unable to login. Please try again.", {
 position: "top-center",

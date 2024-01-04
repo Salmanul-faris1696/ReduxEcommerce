@@ -1,19 +1,20 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { AiFillStar, AiOutlineStar } from "react-icons/ai"
 import { FaFacebook, FaHome, FaInstagram, FaShoppingBag, FaTwitter } from "react-icons/fa"
 import { FiMinus, FiPlus } from "react-icons/fi"
 import { MdShoppingCart } from "react-icons/md"
+import { useQuery } from 'react-query'
 import { Link, useParams } from 'react-router-dom'
-import Cart from "../components/Cart"
-import CartCountBadge from "../components/CartCountBadge"
-import productItem from "../data/feature.json"
-import { useAppDispatch } from '../app/hooks'
-import { addToCart } from '../Features/Cart/CartSlice'
 import descover from "../../public/Images/discover.webp"
 import mastercard from "../../public/Images/mastercard.webp"
 import paypal from "../../public/Images/paypal.webp"
 import visa from "../../public/Images/visa.webp"
-// import PaymentPrompt from '../components/PaymentPrompt'; 
+import { addToCart } from '../Features/Cart/CartSlice'
+import { useAppDispatch } from '../app/hooks'
+import Cart from "../components/Cart"
+import CartCountBadge from "../components/CartCountBadge"
+import { ApiClientPrivate } from '../utils/axios'
+import { productImgUrl } from '../utils/urls'
 import Pay from './Pay'
 
 
@@ -21,21 +22,15 @@ import Pay from './Pay'
 const Product: React.FC = () => {
          const { id } = useParams();
          const [ showCart , setShowCart] =useState<any>(false);
-         const [product ,setProduct] = useState<any>(false);
          const [quantity , setQuantity] = useState<number>(1);
-        //  const [showPaymentPrompt, setShowPaymentPrompt] = useState(false);
 
-
+const { data : product , isLoading } = useQuery('product', async()=>{
+        const response = await ApiClientPrivate.get(`/products/find/${id}`)
+        return response.data;
+    })  
          const toggleCart = () => {
          setShowCart((prevShowCart:boolean) => !prevShowCart);
          };
-
-         useEffect( () => {
-            if(id) {
-                    const selectedProduct = productItem.find((item) => item.id === parseInt( id , 10))
-                    setProduct(selectedProduct)
-                }
-        },[id])
 
 
         const dispatch = useAppDispatch()
@@ -54,18 +49,10 @@ const Product: React.FC = () => {
             }
         }
 
-        // const handleBuyNow = () => {
-        //      setShowPaymentPrompt(true);
-        // };
-
-    //     const handlePaymentConfirm = () => {
-    //     setShowPaymentPrompt(false);
-    // };
-
-    // const handlePaymentCancel = () => {
-    //     setShowPaymentPrompt(false);
-    // };
-
+   
+    if(isLoading){
+        return <div>Loading...</div>
+    }
   
 
   return (
@@ -111,7 +98,10 @@ const Product: React.FC = () => {
 
     <div className="  m-3  md:flex md:gap-3 p-20" >
         <div className="p-2 mb-4 rounded-lg  shadow-lg md:w-[50%] ">
-            <img src={product.img} alt="" />
+            {/* <img src={`${productImgUrl}/${image}`} alt="" /> */}
+            <img src={`${productImgUrl}/${product.image}`} alt={product.title}/>
+           
+            
         </div>
 
         <div className="md:w-[50%] rounded-lg shadow-lg p-5">
@@ -125,7 +115,7 @@ const Product: React.FC = () => {
             </div>
 
             <div className="mb-4 font-bold text-3xl">
-             {product.name}
+             {product.title}
             </div>
 
             <div className="mb-4 text-red-600 text-3xl">

@@ -1,8 +1,31 @@
+import axios from "axios"
+import { useQuery } from "react-query"
 import feature1 from "../../public/Images/feature__1.webp"
-import feartureData from "../data/feature.json"
+import { BASE_URL } from "../utils/axios"
 import FeatureCard from "./FeatureCard"
+import { Swiper, SwiperSlide } from "swiper/react";
+
+
+
 
 const FeatureSection = () => {
+
+    const { data  , isLoading , isError} = useQuery('featureData', async()=>{
+        const response = await axios.get(`${BASE_URL}/products`)
+        return response.data;
+    })   
+    if(isLoading){
+        return <div>
+            Loading...
+        </div>
+    } {}
+
+    console.log({data});
+    
+
+    // useEffect(()=>{
+
+    // },[])
   return (
     <div className="container pt-16">
         <div className="lg:flex justify-between items-center " >
@@ -20,25 +43,38 @@ const FeatureSection = () => {
 
         </div>
 
-        <div className="grid sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 pt-8 gap-2">
-            <div>
-                <img src={feature1} alt="banner" className="w-full h-full object-cover" />
+        <div className="grid grid-cols-4 ">
+            <div className="">
+                <img src={feature1} alt="banner" className=" h-full object-cover" />
             </div>
 
-        {feartureData.map((item) => (
-            <div
-            key={item.id} 
-            
-            >
+<div className="col-span-3 w-full h-full">
 
-        <FeatureCard
-        id={item.id}
-         img={item.img}
-         name={item.name}
-         price={item.price}/>
-         </div>
-         ))
-         }
+            <Swiper  slidesPerView={3} autoplay={{ delay: 3000 }}  className="mySwiper">
+
+                {data.map((item:any) => (
+        <SwiperSlide key={item._id}>
+               
+                <FeatureCard
+                id={item._id}
+                image={item.image}
+                title={item.title}
+                price={item.price}/>
+        </SwiperSlide>
+                
+                ))
+                }
+
+        
+      </Swiper>
+</div>
+
+            
+
+
+
+           
+
         </div>
 
 

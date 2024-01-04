@@ -1,19 +1,58 @@
 const Product = require("../models/Product");
 const { verifyTokenAndAdmin } = require("./verifyToken");
 const router = require("express").Router()
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/products')
+  },
+filename: function (req, file, cb) {
+  const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+  const fileExtension = file.originalname.split('.').pop(); // Extract file extension
+  const finalFileName = `${file.fieldname}-${uniqueSuffix}.${fileExtension}`; // Add extension to filename
+  cb(null, finalFileName);
+}
+
+})
+
+
+
+const upload = multer({ storage: storage })
 
 //Create product
 
-router.post("/" ,verifyTokenAndAdmin, async(req,res) => {
+router.post("/" ,verifyTokenAndAdmin,upload.single("image"), async(req,res) => {
     try {
+        console.log(req.file);
         console.log(req.body);
-        const newProduct = new Product(req.body);
+        const newProduct = new Product({...req.body, image: req.file.filename});
         const savedProduct = await newProduct.save();
         res.status(200).json(savedProduct);        
     } catch (error) {
           res.status(500).json(error);
     }
+});
+
+//
+
+router.get("/images/:imgurl", (req, res) => {
+  const imageName = req.params.imgurl;
+  const imagePath = path.join('uploads/products', imageName);
+  
+  // Use path.resolve to get the absolute path
+  const absolutePath = path.resolve(imagePath);
+
+  console.log({ imageName, imagePath, absolutePath });
+
+  res.sendFile(absolutePath, (err) => {
+    if (err) {
+      console.error('Error sending file:', err);
+      res.status(500).send('Internal Server Error');
+    }
+  });
 });
 
 // Update product
@@ -44,10 +83,11 @@ router.delete("/:id" , verifyTokenAndAdmin , async(req,res) => {
 
 router.get("/find/:id" ,  async(req,res) => {
     try {
+        console.log(req.params.id);
         const product = await Product.findById(req.params.id);
         res.status(200).json(product);
     } catch (error) {
-        res.status(500).json(err);
+        res.status(500).json(error);
     }
 });
 
