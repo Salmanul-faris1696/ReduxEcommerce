@@ -1,8 +1,13 @@
 import { Button, Modal, Table } from 'antd';
+import { useState } from 'react';
+import { FaHome } from 'react-icons/fa';
+import { MdDashboardCustomize } from 'react-icons/md';
 import { PiShoppingCart } from 'react-icons/pi';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient, } from 'react-query';
 import { ApiClientPrivate } from '../../../utils/axios';
-import { useQueryClient } from 'react-query';
+import { productImgUrl } from '../../../utils/urls';
+import EditProductModal from '../EditProductModal';
+import { useNavigate } from 'react-router-dom';
 
 interface Product {
   _id: string;
@@ -14,6 +19,11 @@ interface Product {
 }
 
 const ProductTable: React.FC = () => {
+  const navigate = useNavigate();
+
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
   const { data, isLoading, isError } = useQuery<Product[], Error>('products', async () => {
     try {
       const response = await ApiClientPrivate.get<Product[]>('/products');
@@ -32,6 +42,24 @@ const ProductTable: React.FC = () => {
       },
     }
   );
+const updateProductMutation = useMutation(
+  async (updatedProduct: Product) => {
+    try {
+      const response = await ApiClientPrivate.put(`/products/${updatedProduct._id}`, updatedProduct);
+      return response.data; // Return the updated product data
+    } catch (error) {
+      throw new Error('Error updating product');
+    }
+  },
+  {
+    onSuccess: (data) => {
+      queryClient.invalidateQueries('products');
+    },
+    onError: (error) => {
+      console.error('Mutation error:', error);
+    },
+  }
+);
 
   const handleDelete = async (id: string) => {
     try {
@@ -40,6 +68,39 @@ const ProductTable: React.FC = () => {
       console.error('Error deleting product:', error);
     }
   };
+
+  const handleEditModalSuccess = (updatedProduct: Product) => {
+  try {
+    updateProductMutation.mutate(updatedProduct);
+    window.location.reload(); // Refresh the page after successful edit
+  } catch (error) {
+    console.error('Error updating product:', error);
+  }
+};
+
+
+  const handleEdit = (product: Product) => {
+    setSelectedProduct(product);
+    setIsEditModalVisible(true);
+  };
+
+  const handleEditModalCancel = () => {
+    setIsEditModalVisible(false);
+    setSelectedProduct(null);
+  };
+
+  const handleHomeButton = () =>{
+    navigate('/');
+
+}
+ const handleDashBoardHome = () =>{
+    navigate('/DashBoard');
+
+}
+
+
+
+
 
 
   const columns = [
@@ -63,7 +124,7 @@ const ProductTable: React.FC = () => {
       title: 'Image',
       dataIndex: 'image',
       key: 'image',
-      render: (text: string, record: Product) => <img src={text} alt={record.title} style={{ width: '50px' }} />,
+      render: (record: string) => <img src={`${productImgUrl}/${record}`} alt={record} style={{ width: '50px' }} />,
     },
     {
       title: 'Categories',
@@ -76,7 +137,7 @@ const ProductTable: React.FC = () => {
       key: 'action',
       render: (record: Product) => (
         <>
-          <Button className='bg-blue-700 text-white'>Edit</Button>
+          <Button className='bg-blue-700 text-white' onClick={() => handleEdit(record)}>Edit</Button>
           <Button className='bg-red-600 text-white'  onClick={() => {
               Modal.confirm({
                 title: 'Confirm',
@@ -91,15 +152,24 @@ const ProductTable: React.FC = () => {
     },
   ];
 
-//   console.log(!isLoading && {data});
+  // console.log(!isLoading && {data});
   
 
   return (
     <div className='m-3 rounded-lg bg-orange-300 border shadow-gray-500 shadow-md'>
-      <div className='mt-3 ml-3 font-bold'>
+      <div className='mt-3 ml-3 font-bold flex items-center justify-between mr-5  '>
         <p className='p-3 flex items-center gap-3'>
           Product TABLE <PiShoppingCart size={25} />
         </p>
+        <div className='flex gap-5'>
+
+        <p className='border border-black rounded-full w-[50px] h-[50px] flex items-center justify-center text-[22px]   text-black ' onClick={handleHomeButton}>
+          <FaHome size={25}/>
+        </p>
+        <p className='border border-black rounded-full w-[50px] h-[50px] flex items-center justify-center text-[22px]   text-black ' onClick={handleDashBoardHome}>
+          <MdDashboardCustomize size={25}/>
+        </p>
+        </div>
       </div>
 
       {isLoading ? (
@@ -108,7 +178,14 @@ const ProductTable: React.FC = () => {
         <p>Error fetching data</p>
       ) : (
         <Table columns={columns} dataSource={data} className='p-2 w-full' rowKey='_id' />
-      )}
+        )}
+        <EditProductModal
+        open={isEditModalVisible}
+       onCancel={handleEditModalCancel}
+       productId={selectedProduct?._id || ''}
+       initialProduct={selectedProduct || {}}
+       onSuccess={handleEditModalSuccess}
+     />
     </div>
   );
 };

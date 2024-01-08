@@ -57,16 +57,50 @@ router.get("/images/:imgurl", (req, res) => {
 
 // Update product
 
-router.put("/:id" , verifyTokenAndAdmin, async(req,res) => {
+// router.put("/:id" , verifyTokenAndAdmin,upload.single("image"), async(req,res) => {
+//     try {
+//         const updateProduct = await Product.findByIdAndUpdate(req.params.id, {
+//             $set : req.body , 
+//         },{new :true});
+//         res.status(200).json(updateProduct);
+//     } catch (error) {
+//         res.status(500).json(error);
+//     }
+// });
+
+router.put("/:id", verifyTokenAndAdmin, upload.single("image"), async (req, res) => {
     try {
-        const updateProduct = await Product.findByIdAndUpdate(req.params.id, {
-            $set : req.body
-        },{new :true});
+        const existingProduct = await Product.findById(req.params.id);
+console.log({img: req.file});
+        // If there's an uploaded image, update the image filename
+        const updatedImage = req.file && req.file.filename ;
+        console.log({updatedImage, ex:existingProduct.image});
+
+        // If there's an old image file and it's different from the new one, delete it
+        if (req.file && existingProduct.image && req.file.filename !== existingProduct.image) {
+            console.log("existing");
+            fs.unlink(`uploads/products/${existingProduct.image}`, (err) => {
+                if(err){
+                    console.log("Error deleting file", err.message);
+                }
+                console.log("Success delete");
+            } );
+        }
+
+        const updateProduct = await Product.findByIdAndUpdate(
+            req.params.id,
+            { $set: { ...req.body, image: updatedImage } },
+            { new: true }
+        );
+
         res.status(200).json(updateProduct);
     } catch (error) {
-        res.status(500).json(err);
+        res.status(500).json(error);
     }
 });
+
+
+
 
 //Delete products
 
@@ -75,7 +109,7 @@ router.delete("/:id" , verifyTokenAndAdmin , async(req,res) => {
         await Product.findByIdAndDelete(req.params.id);
         res.status(200).json({message : "product has been deleted"});
     } catch (error) {
-        res.status(500).json(err);
+        res.status(500).json(error);
     }
 });
 
@@ -111,7 +145,7 @@ router.get("/" , async(req, res) => {
         }
         res.status(200).json(products);
     } catch (error) {
-        res.status(500).json(err);
+        res.status(500).json(error);
         
     }
 })
