@@ -33,6 +33,26 @@ router.delete("/:id" ,verifyTokenAndAuthorization, async(req , res) =>{
 
 })
 
+// Block the user
+
+router.put("/block/:id", verifyTokenAndAdmin, async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    
+    user.Blocked = true; // Assuming you have a 'blocked' field in your user schema
+    await user.save();
+    
+    res.status(200).json({ message: "User blocked successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to block user" });
+  }
+});
+
+module.exports = router;
+
 //Get User
 router.get("/find/:id" ,verifyTokenAndAdmin, async(req , res) =>{
     try {

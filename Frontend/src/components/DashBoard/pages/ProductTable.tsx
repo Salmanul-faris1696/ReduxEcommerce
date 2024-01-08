@@ -8,6 +8,8 @@ import { ApiClientPrivate } from '../../../utils/axios';
 import { productImgUrl } from '../../../utils/urls';
 import EditProductModal from '../EditProductModal';
 import { useNavigate } from 'react-router-dom';
+import Category from './../../Category';
+
 
 interface Product {
   _id: string;
@@ -20,11 +22,14 @@ interface Product {
 
 const ProductTable: React.FC = () => {
   const navigate = useNavigate();
+    const [searchQuery, setSearchQuery] = useState('');
+
+
 
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
-  const { data, isLoading, isError } = useQuery<Product[], Error>('products', async () => {
+  const { data, isLoading, isError, refetch } = useQuery<Product[], Error>('products', async () => {
     try {
       const response = await ApiClientPrivate.get<Product[]>('/products');
       return response.data;
@@ -72,7 +77,8 @@ const updateProductMutation = useMutation(
   const handleEditModalSuccess = (updatedProduct: Product) => {
   try {
     updateProductMutation.mutate(updatedProduct);
-    window.location.reload(); // Refresh the page after successful edit
+    // window.location.reload(); // Refresh the page after successful edit
+    refetch()
   } catch (error) {
     console.error('Error updating product:', error);
   }
@@ -151,6 +157,16 @@ const updateProductMutation = useMutation(
       ),
     },
   ];
+const filteredProducts = data?.filter(
+  (product) =>
+    product.title?.toLowerCase().includes(searchQuery?.toLowerCase() ?? '') ||
+    product.description?.toLowerCase().includes(searchQuery?.toLowerCase() ?? '')
+);
+
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
 
   // console.log(!isLoading && {data});
   
@@ -161,6 +177,17 @@ const updateProductMutation = useMutation(
         <p className='p-3 flex items-center gap-3'>
           Product TABLE <PiShoppingCart size={25} />
         </p>
+        <div className='flex justify-center my-3 '>
+        <input
+          type='text'
+          placeholder='Search by name of Product or category'
+          value={searchQuery}
+          onChange={handleSearch}
+          className='p-2 border rounded-md w-80 font-normal'
+        />
+      </div>
+
+
         <div className='flex gap-5'>
 
         <p className='border border-black rounded-full w-[50px] h-[50px] flex items-center justify-center text-[22px]   text-black ' onClick={handleHomeButton}>
@@ -177,7 +204,7 @@ const updateProductMutation = useMutation(
       ) : isError ? (
         <p>Error fetching data</p>
       ) : (
-        <Table columns={columns} dataSource={data} className='p-2 w-full' rowKey='_id' />
+        <Table columns={columns} dataSource={filteredProducts ? filteredProducts : data} className='p-2 w-full' rowKey='_id' />
         )}
         <EditProductModal
         open={isEditModalVisible}

@@ -1,6 +1,8 @@
 import { ChangeEvent, FormEvent, useState } from 'react';
 import { useMutation } from 'react-query';
 import { ApiClientPrivate } from '../utils/axios';
+import { useNavigate } from 'react-router-dom';
+import { Select } from 'antd';
 
 export type Product = {
   title: string;
@@ -59,15 +61,19 @@ const CreateProduct = () => {
     e.preventDefault();
     try {
       await createProductMutation.mutateAsync(product);
+      navigate('/ProductTable')
     } catch (error) {
       console.error('Error creating product:', error);
     }
   };
 
-    const handleCategoryChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    const selectedOptions = Array.from(e.target.selectedOptions).map((option) => option.value);
-    setProduct({ ...product, categories: selectedOptions });
+    const handleCategoryChange = (selectedCategories: string[]) => {
+    setProduct({ ...product, categories: selectedCategories });
   };
+
+
+   const navigate = useNavigate();
+  
 
 
   return (
@@ -75,7 +81,7 @@ const CreateProduct = () => {
       <div className="absolute inset-0 bg-black opacity-50" />
       <div className="mx-auto opacity-80">
         <form className="flex flex-col max-w-md mx-auto h-[550px] p-5" onSubmit={handleSubmit}>
-          <h2 className="text-2xl font-semibold font-serif mb-2 text-center">Create Product</h2>
+          <h2 className="text-2xl font-semibold font-serif mb-2 text-center z-10">Create Product</h2>
 
           <div className="mb-3">
             <label htmlFor="title" className="block text-black font-bold mb-1">
@@ -137,19 +143,20 @@ const CreateProduct = () => {
             <label htmlFor="category" className="block text-black font-bold mb-1">
               Category
             </label>
-            <select
-              name="category" multiple
-              value={product.categories}
-              onChange={handleCategoryChange}
-              className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
-              required
-            >
-              <option value="fruits">Fruits</option>
-              <option value="vegetable">Vegetable</option>
-              <option value="snacks">Snacks</option>
-              <option value="fast-foods">Fast foods</option>
-              <option value="bakeries">Bakeries</option>
-            </select>
+            <Select
+          mode="multiple"
+          value={product.categories}
+          onChange={handleCategoryChange}
+          className="w-full"
+          placeholder="Select categories"
+        >
+          <Select.Option value="fruits">Fruits</Select.Option>
+          <Select.Option value="vegetable">Vegetable</Select.Option>
+          <Select.Option value="snacks">Snacks</Select.Option>
+          <Select.Option value="fast-foods">Fast foods</Select.Option>
+          <Select.Option value="bakeries">Bakeries</Select.Option>
+        </Select>
+
           </div>
 
           <div className="mb-3">

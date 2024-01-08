@@ -17,6 +17,7 @@ import DashBoard from './pages/DashBoard.tsx'
 import 'swiper/css';
 import 'swiper/css/pagination';
 import ProductTable from './components/DashBoard/pages/ProductTable.tsx'
+import UserTable from './components/DashBoard/pages/UserTable.tsx'
 
 
 
@@ -64,6 +65,9 @@ const router = createBrowserRouter([
   },{
     path:"/ProductTable",
     element:<ProductTable/>
+  },{
+    path:"/UserTable",
+    element:<UserTable/>
   }
 
 ])

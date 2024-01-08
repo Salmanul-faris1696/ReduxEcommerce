@@ -19,6 +19,11 @@ unique:true
   isAdmin:{
     type:Boolean,
     default:false
+  },
+  Blocked :{
+     type:Boolean,
+    default:false
+
   }
 }, {
     timestamps: true
