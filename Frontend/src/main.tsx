@@ -18,6 +18,7 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import ProductTable from './components/DashBoard/pages/ProductTable.tsx'
 import UserTable from './components/DashBoard/pages/UserTable.tsx'
+import Items from './pages/Items.tsx'
 
 
 
@@ -50,6 +51,11 @@ const router = createBrowserRouter([
 
       },
     ]
+  },
+  {
+    path:'/Items',
+    element:<Items/>
+
   },
   {
     path:"/product/:id",

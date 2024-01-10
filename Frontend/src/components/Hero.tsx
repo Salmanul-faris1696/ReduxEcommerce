@@ -2,6 +2,7 @@ import hero1 from "../../public/Images/hero1.webp"
 import { FaArrowRight } from "react-icons/fa6";
 import hero2 from "../../public/Images/hero__2.webp"
 import hero3 from "../../public/Images/hero__3.webp"
+import { Link } from 'react-router-dom';
 
 
 
@@ -16,9 +17,12 @@ const Hero = () => {
                     <h2 className="text-2xl sm:text-4xl md:text-6xl font-bold">DIRED FRUIT BEST HEALTHY</h2>
                     <p className="text-gray-500 text-xl pt-4 sm:pt-8">Starting At</p>
                     <div className="font-medium text-red-600 text-2xl sm:text-4xl  pb-4 sm:pb-8 ">$18.36</div>
+                      <Link to= {'/Items'}>
                     <div className="bg-accentDark hover:bg-accent text-white rounded-full w-fit flex items-center gap-4 px-4 py-2 text-[14px] sm:px-6 sm:py-3  cursor-pointer hover:scale-105 duration-300 ">
+
                         Shop Now <FaArrowRight />
                     </div>
+                      </Link>
                 </div>
             </div> 
 

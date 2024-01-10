@@ -1,88 +1,85 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
+import { BASE_URL } from "../../utils/axios";
 
-
-type CartItem = {
-  id: number
-  quantity: number
+interface CartItem {
+  id: number;
+  quantity: number;
 }
 
 interface CartState {
-  cartItems: CartItem[]; // Define the type for products array as per your data structure
+  cartItems: CartItem[];
 }
 
-const initialState = {
+const initialState: CartState = {
   cartItems: [],
-} as CartState;
+};
 
+export const cartSlice = createSlice({
+  name: "cart",
+  initialState,
+  reducers: {
+     addToCart: (state, action: PayloadAction<CartItem>) => {
+      const { id, quantity } = action.payload;
+      const existingItem = state.cartItems.find((item) => item.id === id);
 
-
-export const CartSlice = createSlice({
-    name : "cart",
-    initialState,
-    reducers : {
-        addToCart :( state: CartState, action: PayloadAction<any>) => {
-          const {id,qtty } = action.payload
-
-
-            if (state.cartItems.find(item => item.id === id) == null) {
-              state.cartItems = [...state.cartItems,{id, quantity:qtty ? qtty : 1}]
-            }else{
-              state.cartItems = state.cartItems.map (item => {
-                if (item.id === id) {
-            return { ...item, quantity: item.quantity + 1 }
-          } else {
-            return item
-          }
-              } )
-            }
-
-        },
-
-         removeFromCart: (state: CartState, action: PayloadAction<any>) => {
-          console.log(action.payload);
-          
-      state.cartItems = state.cartItems.filter(product => product.id !== action.payload.id);
+      if (existingItem) {
+        // If the item exists, update its quantity
+        existingItem.quantity += quantity || 1;
+      } else {
+        // If the item doesn't exist, add it to the cart
+        state.cartItems.push({ id, quantity: quantity || 1 });
+      }
+    },
+    // ... other reducer actions like removeFromCart, decrementQuantity, incrementQuantity, etc.
+  
+    removeFromCart: (state :CartState, action: PayloadAction<number>) => {
+      const idToRemove = action.payload;
+      state.cartItems = state.cartItems.filter((item) => item.id !== idToRemove);
     },
 
-    decrementQuantity:(state ,action) => {
-      const {id} = action.payload;
-      const existingProduct = state.cartItems.find((product) => product.id === id)
+    decrementQuantity: (state:CartState, action: PayloadAction<number>) => {
+      const idToDecrement = action.payload;
+      const existingItem = state.cartItems.find((item) => item.id === idToDecrement);
 
-      if(existingProduct){
-        if(existingProduct.quantity >1){
-          existingProduct.quantity -= 1
-
-        }
-        else{
-          state.cartItems =state.cartItems.filter((product) => product.id !== id)
-        }
+      if (existingItem && existingItem.quantity > 1) {
+        existingItem.quantity -= 1;
       }
     },
 
-    incrementQuantity : (state , action) => {
-      const {id} = action.payload;
-      const existingProduct = state.cartItems.find((Product) => Product.id === id) 
-      if(existingProduct) {
-        existingProduct.quantity += 1
+    incrementQuantity: (state, action: PayloadAction<number>) => {
+      const idToIncrement = action.payload;
+      const existingItem = state.cartItems.find((item) => item.id === idToIncrement);
+
+      if (existingItem) {
+        existingItem.quantity += 1;
       }
+    },
 
-    }
-        
-    }
-})
+    setCartItems: (state, action: PayloadAction<CartItem[]>) => {
+      state.cartItems = action.payload;
+    },
+  },
+});
 
-export const {addToCart} = CartSlice.actions
+export const {
+  addToCart,
+  removeFromCart,
+  decrementQuantity,
+  incrementQuantity,
+  setCartItems,
+} = cartSlice.actions;
 
-export const {removeFromCart} = CartSlice.actions
+export const fetchCartItems = () => async (dispatch: any) => {
+  try {
+    const response = await fetch(`${BASE_URL}/cart`);
+    const data = await response.json();
+    dispatch(setCartItems(data));
+  } catch (error) {
+    console.error("Error fetching cart items:", error);
+  }
+};
 
-export const { decrementQuantity } = CartSlice.actions;
+export const selectCart = (state: RootState) => state.cart.cartItems;
 
-export const { incrementQuantity } = CartSlice.actions;
-
-
-
-export const selectCart = (state: RootState) => state.cart.cartItems
-
-
-export default CartSlice.reducer
+export default cartSlice.reducer;

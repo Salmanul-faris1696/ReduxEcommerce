@@ -94,17 +94,18 @@ const { data : product , isLoading } = useQuery('product', async()=>{
         
         
     </div>
+    
 
 
-    <div className="  m-3  md:flex md:gap-3 p-20" >
-        <div className="p-2 mb-4 rounded-lg  shadow-lg md:w-[50%] ">
+    <div className="  m-3  md:flex md:gap-3 p-20 h-screen " >
+        <div className="p-2 mb-4 rounded-lg  shadow-lg md:flex-1 h-full sticky top-5 ">
             {/* <img src={`${productImgUrl}/${image}`} alt="" /> */}
-            <img src={`${productImgUrl}/${product.image}`} alt={product.title}/>
+            <img src={`${productImgUrl}/${product.image}`} className='w-fit mx-auto h-full' alt={product.title}/>
            
             
         </div>
 
-        <div className="md:w-[50%] rounded-lg shadow-lg p-5">
+        <div className="md:flex-1 rounded-lg shadow-lg p-4 h-full">
 
              <div className="text-yellow-400 flex gap-[2px] text-[20px] mb-4">
                 <AiFillStar />
@@ -114,16 +115,16 @@ const { data : product , isLoading } = useQuery('product', async()=>{
                 <AiOutlineStar />
             </div>
 
-            <div className="mb-4 font-bold text-3xl">
+            <div className="mb-3 font-bold text-3xl">
              {product.title}
             </div>
 
-            <div className="mb-4 text-red-600 text-3xl">
-                {product.price}
+            <div className="mb-3 text-red-600 text-3xl">
+               Price: {product.price}
             </div>
 
             <div>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Commodi facilis cum ut vitae illum asperiores magnam, deleniti esse aliquid, corporis modi cumque libero quisquam, voluptates similique odit eos pariatur quo.
+                {product.desc}
             </div>
 
             <div className="flex justify-center items-center mt-10  md:flex md:justify-start gap-4">

@@ -179,7 +179,7 @@ const CreateProduct = () => {
           <div className="mb-3 text-center ">
             <button
               type="submit"
-              className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md focus:outline-none focus:bg-blue-600 w-full" onClick={handleSubmit}
+              className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md focus:outline-none focus:bg-blue-600 w-full" 
             >
               Create
             </button>

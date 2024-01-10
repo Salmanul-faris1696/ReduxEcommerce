@@ -114,12 +114,14 @@ const updateProductMutation = useMutation(
       title: 'Title',
       dataIndex: 'title',
       key: 'title',
+
       render: (text: string, record: Product) => <a>{text}</a>,
     },
     {
       title: 'Description',
       dataIndex: 'desc',
       key: 'desc',
+            ellipsis: true,
     },
     {
       title: 'Price',
@@ -172,7 +174,7 @@ const filteredProducts = data?.filter(
   
 
   return (
-    <div className='m-3 rounded-lg bg-orange-300 border shadow-gray-500 shadow-md'>
+    <div className='m-3 rounded-lg  bg-orange-300 border shadow-gray-500 shadow-md'>
       <div className='mt-3 ml-3 font-bold flex items-center justify-between mr-5  '>
         <p className='p-3 flex items-center gap-3'>
           Product TABLE <PiShoppingCart size={25} />
@@ -204,7 +206,7 @@ const filteredProducts = data?.filter(
       ) : isError ? (
         <p>Error fetching data</p>
       ) : (
-        <Table columns={columns} dataSource={filteredProducts ? filteredProducts : data} className='p-2 w-full' rowKey='_id' />
+        <Table columns={columns} dataSource={filteredProducts ? filteredProducts : data} pagination={{ pageSize: 10 }} scroll={{ y: 540 }}  className='p-2 w-full' rowKey='_id' />
         )}
         <EditProductModal
         open={isEditModalVisible}
