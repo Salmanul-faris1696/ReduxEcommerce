@@ -1,18 +1,23 @@
+import Cookies from "js-cookie";
+import { useState ,useEffect} from "react";
 import { FaUser } from "react-icons/fa";
-import { MdShoppingCart } from "react-icons/md";
+import { MdDashboardCustomize, MdShoppingCart } from "react-icons/md";
+import { useNavigate } from 'react-router-dom';
 import CartCountBadge from "./CartCountBadge";
 import Searchbar from "./SearchBar";
-import { useState } from "react";
-import { useNavigate } from 'react-router-dom';
-import Login from './../pages/Login';
-import Cookies from "js-cookie"
-import { MdDashboardCustomize } from "react-icons/md";
+import { axiosInstance } from './axios'; 
 
+
+interface UserRoleResponse {
+  role: string;
+}
 
 const Navbar = ({setShowCart}:any) => {
     const [showUserOptions, setShowUserOptions] = useState(false);
+    const [userRole, setUserRole] = useState('');
+  const [isLoadingRole, setIsLoadingRole] = useState(false)
       const navigate = useNavigate();
-
+ 
 
   const toggleUserOptions = () => {
     setShowUserOptions(!showUserOptions);
@@ -27,6 +32,9 @@ const Navbar = ({setShowCart}:any) => {
   const handleAdminPage= ()=>{
     navigate("/DashBoard");
   }
+  
+
+  
 
   return (
     <div className=" sticky top-0 bg-white z-10 shadow-md">

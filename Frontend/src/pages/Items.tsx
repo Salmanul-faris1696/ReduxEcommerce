@@ -1,23 +1,27 @@
-import React, { useState } from 'react';
-import { Card, Col, Input, Row } from 'antd';
-import { useQuery } from 'react-query';
-import { Link, useNavigate } from 'react-router-dom';
-import { ApiClientPrivate } from '../utils/axios';
-import { productImgUrl } from '../utils/urls';
-import { FaHome } from 'react-icons/fa';
+import React, { useState } from "react";
+import { Card, Col, Input, Row } from "antd";
+import { useQuery } from "react-query";
+import { Link, useNavigate } from "react-router-dom";
+import { ApiClientPrivate } from "../utils/axios";
+import { productImgUrl } from "../utils/urls";
+import { FaHome } from "react-icons/fa";
 
 const { Search } = Input;
 
 const Items: React.FC = () => {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
-  const { data: products, isLoading, isError } = useQuery('products', async () => {
+  const {
+    data: products,
+    isLoading,
+    isError,
+  } = useQuery("products", async () => {
     try {
-      const response = await ApiClientPrivate.get('/products');
+      const response = await ApiClientPrivate.get("/products");
       return response.data;
     } catch (error) {
-      throw new Error('Error fetching Products');
+      throw new Error("Error fetching Products");
     }
   });
 
@@ -29,7 +33,7 @@ const Items: React.FC = () => {
     return <p>Error fetching products</p>;
   }
 
-    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
   };
 
@@ -38,38 +42,34 @@ const Items: React.FC = () => {
   );
 
   const handleHomeButton = () => {
-    navigate('/');
+    navigate("/");
   };
 
   return (
     <div>
-      <nav className="bg-white p-4 py-8 flex justify-between shadow-lg " >
+      <nav className="bg-white p-4 py-8 flex justify-between shadow-lg ">
         <div>
-        <h1 className='text-4xl font-semibold font-serif'>
-            Products
-        </h1>
-
+          <h1 className="text-4xl font-semibold font-serif">Products</h1>
         </div>
 
-        <div className='flex items-center gap-5'>
+        <div className="flex items-center gap-5">
+          <Search
+            placeholder="Search products..."
+            allowClear
+            value={searchQuery}
+            enterButton="Search"
+            onChange={handleSearch}
+            className="w-[400px] mr-4  bg-gray-500 p-2"
+          />
 
-        <Search
-          placeholder="Search products..."
-          allowClear
-          value={searchQuery}
-          enterButton="Search"
-          onChange={handleSearch}
-          className="w-[400px] mr-4  bg-gray-500 p-2"
-        />
-
-        <div>
-          <p
-            className="border border-black rounded-full w-[50px] h-[50px] flex items-center justify-center text-[22px] text-black cursor-pointer"
-            onClick={handleHomeButton}
-          >
-            <FaHome size={25} />
-          </p>
-        </div>
+          <div>
+            <p
+              className="border border-black rounded-full w-[50px] h-[50px] flex items-center justify-center text-[22px] text-black cursor-pointer"
+              onClick={handleHomeButton}
+            >
+              <FaHome size={25} />
+            </p>
+          </div>
         </div>
       </nav>
       <div className="mx-auto mt-4">
@@ -82,7 +82,11 @@ const Items: React.FC = () => {
                   bordered={false}
                   className="h-full cursor-pointer hover:scale-95 duration-300"
                 >
-                  <img src={`${productImgUrl}/${product.image}`} alt="" className="h-40 w-full object-cover" />
+                  <img
+                    src={`${productImgUrl}/${product.image}`}
+                    alt=""
+                    className="h-40 w-full object-cover"
+                  />
                   <p>Price: ${product.price}</p>
                 </Card>
               </Link>

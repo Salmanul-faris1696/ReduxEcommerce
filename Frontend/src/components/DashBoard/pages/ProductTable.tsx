@@ -9,6 +9,7 @@ import { productImgUrl } from '../../../utils/urls';
 import EditProductModal from '../EditProductModal';
 import { useNavigate } from 'react-router-dom';
 import Category from './../../Category';
+import Cookies from "js-cookie";
 
 
 interface Product {
@@ -40,7 +41,7 @@ const ProductTable: React.FC = () => {
    const queryClient = useQueryClient();
 
   const deleteProductMutation = useMutation(
-    (id: string) => ApiClientPrivate.delete(`/products/${id}`),
+    (id: string) => ApiClientPrivate.delete(`/products/${id}`,),
     {
       onSuccess: () => {
         queryClient.invalidateQueries('products');

@@ -7,89 +7,87 @@ const router = require("express").Router();
 
 
 
-router.post('/', verifyToken, async (req, res) => {
-  const { userId, productId, quantity } = req.body;
 
+
+router.post("/", verifyToken, async (req, res) => {
   try {
-    let cart = await Cart.findOne({ userId });
+    const { productId, quantity } = req.body;
+    const userId = req.user.id
 
-    if (!cart) {
-      // If cart doesn't exist for the user, create a new one
-      const newCart = new Cart({
-        userId,
-        products: [{ productId, quantity }]
-      });
+    const existingCart = await Cart.findOne({ userId });
 
-      const savedCart = await newCart.save();
-      return res.status(200).json(savedCart);
-    }
+    if (existingCart) {
+      const existingItemIndex = existingCart.cartItems.findIndex(
+        (item) => item.product.toString() === productId
+      );
 
-    // If cart exists for the user, check if the product is already in the cart
-    const existingProductIndex = cart.products.findIndex(
-      (product) => product.productId === productId
-    );
+      if (existingItemIndex !== -1) {
+        existingCart.cartItems[existingItemIndex].quantity += quantity;
+      } else {
+        existingCart.cartItems.push({ product: productId, quantity });
+      }
 
-    if (existingProductIndex !== -1) {
-      // If the product exists in the cart, update the quantity
-      cart.products[existingProductIndex].quantity += quantity;
+      await existingCart.save();
+      const populatedCart = await Cart.findById(existingCart._id).populate("cartItems.product");
+      console.log({ populatedCart });
+      res.status(200).json(populatedCart);
     } else {
-      // If the product is not in the cart, add it
-      cart.products.push({ productId, quantity });
+      const newCart = await Cart.create({
+        userId,
+        cartItems: [{ product: productId, quantity }],
+      });
+      const populatedCart = await Cart.findById(newCart._id).populate("cartItems.product");
+      res.status(201).json(populatedCart);
     }
-
-    const updatedCart = await cart.save();
-    res.status(200).json(updatedCart);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error(error);
+    res.status(500).json({ error: "Failed to add item to cart" });
   }
 });
 
 
-// // Upadte Cart 
-
-// router.put ("/:id" , verifyTokenAndAuthorization , async(req,res) => {
-//     console.log(req.params);
-//     try {
-//         const updatedCart = await Cart.findByIdAndUpdate(req.params.id , {
-//             $set : req.body
-//         },{new : true});
-//         res.status(200).json(updatedCart);
-//     } catch (error) {
-//         console.log(error);
-//         res.status(500).json(error);
-//     }
-// });
 
 
-router.delete('/:userId/:productId', verifyToken, async (req, res) => {
-  const { userId, productId } = req.params;
+router.delete('/:productId', verifyToken, async (req, res) => {
+  const { productId } = req.params;
   const { quantity, removeEntirely } = req.body;
-
+  const userId = req.user.id
   try {
     let cart = await Cart.findOne({ userId });
+    console.log({
+      quantity, removeEntirely,
+      productId, cart: cart.cartItems.map(
+        // (product) => String(product.product) === productId
+        (product) => product
+
+      )
+    });
 
     if (!cart) {
       return res.status(404).json({ message: 'Cart not found' });
     }
 
-    const existingProductIndex = cart.products.findIndex(
-      (product) => product.productId === productId
+    const existingProductIndex = cart.cartItems.findIndex(
+      (product) => String(product.product) === productId
+
     );
 
     if (existingProductIndex !== -1) {
-      if (removeEntirely || quantity >= cart.products[existingProductIndex].quantity) {
+      console.log("128 ::", removeEntirely || quantity >= cart.cartItems[existingProductIndex].quantity);
+      if (removeEntirely || quantity >= cart.cartItems[existingProductIndex].quantity) {
         // Remove the entire product from the cart
-        cart.products.splice(existingProductIndex, 1);
+        cart.cartItems.splice(existingProductIndex, 1);
       } else {
         // Decrease the quantity of the product
-        cart.products[existingProductIndex].quantity -= quantity;
-        if (cart.products[existingProductIndex].quantity <= 0) {
+        cart.cartItems[existingProductIndex].quantity -= quantity;
+        if (cart.cartItems[existingProductIndex].quantity <= 0) {
           // Remove the product if the quantity reaches less than zero
-          cart.products.splice(existingProductIndex, 1);
+          cart.cartItems.splice(existingProductIndex, 1);
         }
       }
 
       const updatedCart = await cart.save();
+
       return res.status(200).json(updatedCart);
     } else {
       return res.status(404).json({ message: 'Product not found in cart' });
@@ -102,26 +100,28 @@ router.delete('/:userId/:productId', verifyToken, async (req, res) => {
 
 
 // Get User Cart 
-router.get("/:userId" , verifyTokenAndAuthorization, async(req,res) =>{
-    try {
-        const cart = await Cart.findOne({ userId : req.params.userId});
-        res.status(200).json(cart);
-    } catch (error) {
-        res.status(500).json(error);
+router.get("/", verifyToken, async (req, res) => {
+  try {
+    const cart = await Cart.findOne({ userId: req.user.id }).populate("cartItems.product");
+    if (!cart) {
+      return res.status(404).json({ message: 'Cart not found' });
     }
+    res.status(200).json(cart);
+  } catch (error) {
+    res.status(500).json(error);
+  }
 });
 
 //Get all Carts
+router.get("/all", verifyTokenAndAdmin, async (req, res) => {
+  try {
+    const carts = await Cart.find().populate("cartItems.product");
+    res.status(200).json(carts);
 
-router.get("/" , verifyTokenAndAdmin, async(req ,res) => {
-    try {
-        const carts = await Cart.find();
-        res.status(200).json(carts);
-        
-    } catch (error) {
-        res.status(500).json(error);
-        
-    }
+  } catch (error) {
+    res.status(500).json(error);
+
+  }
 });
 
 

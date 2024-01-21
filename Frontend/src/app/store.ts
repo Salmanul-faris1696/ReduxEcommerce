@@ -1,11 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import cartReducer from "../Features/Cart/CartSlice"
+import cartAsyncReducer from "../Features/Cart/CartSliceAsync"
 
 const store = configureStore({
-     reducer:{
-          cart:cartReducer
-          
-        
+     reducer: {
+          cart: cartReducer,
+          cartSliceAsync: cartAsyncReducer
+
+
      }
 })
 

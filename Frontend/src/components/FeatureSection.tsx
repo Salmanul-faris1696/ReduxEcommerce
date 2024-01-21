@@ -4,7 +4,8 @@ import feature1 from "../../public/Images/feature__1.webp"
 import { BASE_URL } from "../utils/axios"
 import FeatureCard from "./FeatureCard"
 import { Swiper, SwiperSlide } from "swiper/react";
-
+import { Autoplay } from "swiper/modules"
+import 'swiper/css/autoplay'
 
 
 
@@ -23,9 +24,7 @@ const FeatureSection = () => {
     console.log({data});
     
 
-    // useEffect(()=>{
-
-    // },[])
+    
   return (
     <div className="container pt-16">
         <div className="lg:flex justify-between items-center " >
@@ -43,39 +42,44 @@ const FeatureSection = () => {
 
         </div>
 
-        <div className="grid grid-cols-4 ">
-            <div className="">
-                <img src={feature1} alt="banner" className=" h-full object-cover" />
-            </div>
-
-<div className="col-span-3 w-full h-full">
-
-            <Swiper  slidesPerView={3} autoplay={{ delay: 3000 }}  className="mySwiper">
-
-                {data.map((item:any) => (
-        <SwiperSlide key={item._id}>
-               
-                <FeatureCard
-                id={item._id}
-                image={item.image}
-                title={item.title}
-                price={item.price}/>
-        </SwiperSlide>
-                
-                ))
-                }
-
+       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         
-      </Swiper>
+  <div className="mt-5 sm:col-span-2 md:col-span-3 lg:col-span-4">
+    <Swiper
+      slidesPerView={1}  
+      breakpoints={{
+        640: {
+          slidesPerView: 2,  
+        },
+        768: {
+          slidesPerView: 3, 
+        },
+        1024: {
+          slidesPerView: 4,  
+        },
+      }}
+      modules={[Autoplay]}
+      autoplay={{ delay: 1000 }}
+      loop={true}
+      speed={3000}
+      
+      className="mySwiper "
+    >
+      {data.map((item: any) => (
+        <SwiperSlide key={item._id}>
+          <FeatureCard
+            id={item._id}
+            image={item.image}
+            title={item.title}
+            price={item.price}
+          />
+        </SwiperSlide>
+      ))}
+    </Swiper>
+  </div>
+  
 </div>
 
-            
-
-
-
-           
-
-        </div>
 
 
 

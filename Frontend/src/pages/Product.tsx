@@ -4,19 +4,21 @@ import { FaFacebook, FaHome, FaInstagram, FaShoppingBag, FaTwitter } from "react
 import { FiMinus, FiPlus } from "react-icons/fi"
 import { MdShoppingCart } from "react-icons/md"
 import { useQuery } from 'react-query'
+import { useDispatch } from 'react-redux'
 import { Link, useParams } from 'react-router-dom'
 import descover from "../../public/Images/discover.webp"
 import mastercard from "../../public/Images/mastercard.webp"
 import paypal from "../../public/Images/paypal.webp"
 import visa from "../../public/Images/visa.webp"
-import { addToCart } from '../Features/Cart/CartSlice'
-import { useAppDispatch } from '../app/hooks'
+import { addToCart } from '../Features/Cart/CartSliceAsync'
 import Cart from "../components/Cart"
 import CartCountBadge from "../components/CartCountBadge"
 import { ApiClientPrivate } from '../utils/axios'
 import { productImgUrl } from '../utils/urls'
 import Pay from './Pay'
 
+
+ 
 
 
 const Product: React.FC = () => {
@@ -33,7 +35,7 @@ const { data : product , isLoading } = useQuery('product', async()=>{
          };
 
 
-        const dispatch = useAppDispatch()
+        const dispatch = useDispatch()
 
         const handleIncrement = () => {
             setQuantity(quantity + 1) ;
@@ -48,6 +50,10 @@ const { data : product , isLoading } = useQuery('product', async()=>{
                 setQuantity(quantity - 1 );
             }
         }
+
+        const handleAddToCart = () => {
+    dispatch(addToCart({ productId: id, quantity }));
+  };
 
    
     if(isLoading){
@@ -144,11 +150,12 @@ const { data : product , isLoading } = useQuery('product', async()=>{
                  </div>
                 
 
-                <div className='flex items-center justify-center bg-accent p-3 rounded-full text-white cursor-pointer 'onClick={()=> dispatch(addToCart({...product,qtty:quantity}))}>
-
-                    <FaShoppingBag  size={25}/>
-                    
-                </div>
+                <div
+  className='flex items-center justify-center bg-accent p-3 rounded-full text-white cursor-pointer'
+  onClick={handleAddToCart}
+>
+  <FaShoppingBag size={25} />
+</div>
 
 
             </div>

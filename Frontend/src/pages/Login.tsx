@@ -29,8 +29,12 @@ const Login: React.FC = () => {
 
       // Handle successful login (e.g., redirect)
       console.log('Login successful', {data});
+      console.log(data.other);
+      
 
       Cookies.set("token" , data.accessToken)
+      Cookies.set("userID" , data.others._id);
+       window.location.reload();
       
     },
     onError: (error: Error) => {

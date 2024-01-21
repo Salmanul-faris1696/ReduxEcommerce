@@ -1,80 +1,76 @@
+import React from 'react';
 import { HiOutlineMinus } from "react-icons/hi";
 import { RxCross1 } from "react-icons/rx";
-import { decrementQuantity, removeFromCart } from "../Features/Cart/CartSlice";
-import { useAppDispatch, useAppSelector } from "../app/hooks";
-import { selectCart } from "../Features/Cart/CartSlice";
-import { useEffect, useState } from "react";
-import { productImgUrl } from "../utils/urls";
+import { getAllCartItems, removeFromCart } from "../Features/Cart/CartSliceAsync";
+import { useAppDispatch } from '../app/hooks';
+import { productImgUrl } from '../utils/urls';
 
-interface Product {
-  id: number;
+interface CartProductProps {
+  productId: string;
+  quantity: number;
   title: string;
-  price: number;
   image: string;
+  isLoading:boolean;
+  removeEntirely:boolean
+  
 }
 
-interface propsType {
-  id: number;
-  qtty: number;
-}
-
-const CartProduct: React.FC<propsType> = ({ id, qtty }) => {
+const CartProduct: React.FC<CartProductProps> = ({
+  productId,
+  quantity,
+  title,
+  image,
+  isLoading,
+ 
+}) => {
   const dispatch = useAppDispatch();
-  const cartItems = useAppSelector(selectCart);
-  const [prod, setProd] = useState<Product | null>(null);
 
-  useEffect(() => {
-    const product = cartItems.find((item) => item.id === id);
-    if (product) {
-      fetchProductDetails(product.id);
-    }
-  }, [id, cartItems]);
-
-  const fetchProductDetails = async (id: number) => {
+  const handleRemoveFromCart = async () => {
     try {
-      const response = await fetch(`${productImgUrl}/${id}`); // Adjust the endpoint as per your API
-      if (!response.ok) {
-        throw new Error('Failed to fetch');
-      }
-      const data = await response.json();
-      setProd(data);
+      const payload = { productId, removeEntirely: true, quantity };
+      // console.log('Remove from cart payload:', payload);
+      await dispatch(removeFromCart(payload));
+
+      dispatch(getAllCartItems())
     } catch (error) {
-      console.error("Error fetching product:", error);
+      console.error('Error removing item from cart:', error);
     }
   };
 
-  const handleRemoveFromCart = () => {
-    if (prod) {
-      dispatch(removeFromCart(prod.id)); 
-    }
-  };
 
-  const handleDecrementQuantity = () => {
-    if (prod && qtty > 1) {
-      dispatch(decrementQuantity(prod.id));
+    const handleDecrementQuantity = async () => {
+    try {
+      const payload = { productId, removeEntirely: false, quantity: 1 };
+      // console.log('Decrement quantity payload:', payload);
+      await dispatch(removeFromCart(payload));
+      dispatch(getAllCartItems());
+    } catch (error) {
+      console.error('Error decrementing item quantity:', error);
     }
-  };
-
-  if (!prod) {
-    return <div>Loading...</div>; // Handle loading state
+  }
+  if (isLoading) {
+    return <p>Loading product...</p>;
   }
 
   return (
     <div className="flex justify-between items-center bg-slate-100 relative">
       <div>
         <div className="flex items-center gap-4">
-          <img src={`${productImgUrl}/${prod.image}`} alt="" className="h-[100px] m-1" />
+          <img
+            src={`${productImgUrl}/${image}`}
+            alt=""
+            className="h-[100px] m-1"
+          />
           <div className="flex gap-10">
-            <h3 className="font-medium">{prod.title}</h3>
-            <p className="text-gray-600">{prod.price}</p>
+            <h3 className="font-medium">{title}</h3>
             <RxCross1 onClick={handleRemoveFromCart} className="cursor-pointer absolute top-5 right-5" />
           </div>
         </div>
         <div className="flex items-center justify-center gap-5 ml-14 mb-5">
-          <div className="flex ">Number of items: {qtty} </div>
-          {qtty > 1 && (
+          <div className="flex">Number of items: {quantity}</div>
+          {quantity > 1 && (
             <button
-              onClick={handleDecrementQuantity}
+            onClick={handleDecrementQuantity}
               className="border  p-1 bg-red-700 rounded-md hover:scale-105 text-white"
             >
               <HiOutlineMinus />
